@@ -1,7 +1,7 @@
 """
 User Interface for the 3D Tic Tac Toe game.
 
-This module manages:
+This file manages:
 - Initialization of the game board.
 - Displaying the board to the user.
 - User prompts for game difficulty, choosing the starting player, and selecting moves.

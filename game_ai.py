@@ -1,7 +1,7 @@
 """
 game_ai.py
 
-This module implements the AI logic for a 3D Tic Tac Toe game. 
+This file implements the AI logic for a 3D Tic Tac Toe game. 
 The AI uses the alpha-beta pruning algorithm to determine the best move.
 
 Functions:
@@ -70,4 +70,3 @@ def alpha_beta(player, depth, alpha, beta, board):
                             break  # pruning
 
     return best_value, best_move
-

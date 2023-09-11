@@ -1,7 +1,7 @@
 """
 game_logic.py
 
-This module contains the core logic functions for the 3D Tic Tac Toe game:
+This file contains the core logic functions for the 3D Tic Tac Toe game:
     1. Function to check for a winning condition.
     2. Function to evaluate the game state (for AI).
 """
@@ -99,19 +99,71 @@ def is_board_full(board):
     return True
 
 
+# def evaluate(board):
+#     """
+#     Evaluate the game state.
+
+#     Returns:
+#         int: 
+#             100 if the player wins,
+#             -100 if the opponent wins,
+#             0 otherwise.
+#     """
+#     if check_win(1, board):  # Player wins
+#         return 100
+#     elif check_win(-1, board):  # Opponent wins
+#         return -100
+#     else:
+#         return 0
+
 def evaluate(board):
     """
     Evaluate the game state.
-
+    
     Returns:
         int: 
-            100 if the player wins,
-            -100 if the opponent wins,
+            1000 if the player wins,
+            -1000 if the opponent wins,
+            Positive or negative values based on the potential of winning or losing, 
             0 otherwise.
     """
+    # Check for immediate win/loss
     if check_win(1, board):  # Player wins
-        return 100
+        return 1000
     elif check_win(-1, board):  # Opponent wins
-        return -100
-    else:
-        return 0
+        return -1000
+    
+    # Evaluate potential for winning or losing
+    score = 0
+
+    # Check how many lines are one move away from a win for both player and opponent
+    for player in [1, -1]:
+        # Define multiplier for scoring based on the player
+        multiplier = 1 if player == 1 else -1
+
+        for z in range(4):
+            for i in range(4):
+                # Check rows and columns for each layer
+                if sum(board[z][i]) == 3 * player or \
+                   sum([board[z][j][i] for j in range(4)]) == 3 * player:
+                    score += 10 * multiplier
+
+            # Check two 2D diagonals for each layer
+            if sum([board[z][i][i] for i in range(4)]) == 3 * player or \
+               sum([board[z][i][3-i] for i in range(4)]) == 3 * player:
+                score += 10 * multiplier
+
+        # Check vertical stacks across the layers
+        for x in range(4):
+            for y in range(4):
+                if sum([board[k][x][y] for k in range(4)]) == 3 * player:
+                    score += 10 * multiplier
+        
+        # Check the four 3D main diagonals
+        if sum([board[i][i][i] for i in range(4)]) == 3 * player or \
+           sum([board[i][3-i][i] for i in range(4)]) == 3 * player or \
+           sum([board[i][i][3-i] for i in range(4)]) == 3 * player or \
+           sum([board[i][3-i][3-i] for i in range(4)]) == 3 * player:
+            score += 10 * multiplier
+
+    return score
