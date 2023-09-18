@@ -99,71 +99,73 @@ def is_board_full(board):
     return True
 
 
-# def evaluate(board):
-#     """
-#     Evaluate the game state.
-
-#     Returns:
-#         int: 
-#             100 if the player wins,
-#             -100 if the opponent wins,
-#             0 otherwise.
-#     """
-#     if check_win(1, board):  # Player wins
-#         return 100
-#     elif check_win(-1, board):  # Opponent wins
-#         return -100
-#     else:
-#         return 0
-
-def evaluate(board):
+def evaluate(board, depth):
     """
     Evaluate the game state.
     
+    Args:
+        board: The current state of the game board.
+        depth: Current depth in the search tree.
+
     Returns:
         int: 
-            1000 if the player wins,
-            -1000 if the opponent wins,
-            Positive or negative values based on the potential of winning or losing, 
-            0 otherwise.
+            Scaled score based on the depth.
     """
-    # Check for immediate win/loss
+
+    # Immediate win/loss
     if check_win(1, board):  # Player wins
-        return 1000
+        return 1000 / (depth + 1)
     elif check_win(-1, board):  # Opponent wins
-        return -1000
-    
-    # Evaluate potential for winning or losing
+        return -1000 / (depth + 1)
+
     score = 0
 
-    # Check how many lines are one move away from a win for both player and opponent
-    for player in [1, -1]:
-        # Define multiplier for scoring based on the player
-        multiplier = 1 if player == 1 else -1
-
+    # Check patterns function
+    def check_pattern(target_sum, player):
+        nonlocal score
+        multiplier = 50 if target_sum == 2 else 150
+        multiplier = multiplier if player == 1 else -multiplier
+        local_score = 0
         for z in range(4):
             for i in range(4):
-                # Check rows and columns for each layer
-                if sum(board[z][i]) == 3 * player or \
-                   sum([board[z][j][i] for j in range(4)]) == 3 * player:
-                    score += 10 * multiplier
+                if sum(board[z][i]) == target_sum * player or \
+                   sum([board[z][j][i] for j in range(4)]) == target_sum * player:
+                    local_score += multiplier
+                if sum([board[z][i][i] for i in range(4)]) == target_sum * player or \
+                   sum([board[z][i][3-i] for i in range(4)]) == target_sum * player:
+                    local_score += multiplier
 
-            # Check two 2D diagonals for each layer
-            if sum([board[z][i][i] for i in range(4)]) == 3 * player or \
-               sum([board[z][i][3-i] for i in range(4)]) == 3 * player:
-                score += 10 * multiplier
+            for x in range(4):
+                for y in range(4):
+                    if sum([board[k][x][y] for k in range(4)]) == target_sum * player:
+                        local_score += multiplier
 
-        # Check vertical stacks across the layers
-        for x in range(4):
-            for y in range(4):
-                if sum([board[k][x][y] for k in range(4)]) == 3 * player:
-                    score += 10 * multiplier
-        
-        # Check the four 3D main diagonals
-        if sum([board[i][i][i] for i in range(4)]) == 3 * player or \
-           sum([board[i][3-i][i] for i in range(4)]) == 3 * player or \
-           sum([board[i][i][3-i] for i in range(4)]) == 3 * player or \
-           sum([board[i][3-i][3-i] for i in range(4)]) == 3 * player:
-            score += 10 * multiplier
+            if sum([board[i][i][i] for i in range(4)]) == target_sum * player or \
+               sum([board[i][3-i][i] for i in range(4)]) == target_sum * player or \
+               sum([board[i][i][3-i] for i in range(4)]) == target_sum * player or \
+               sum([board[i][3-i][3-i] for i in range(4)]) == target_sum * player:
+                local_score += multiplier
+        score += local_score
+
+    # Check for two in a row
+    for player in [1, -1]:
+        check_pattern(2, player)
+
+    # Check for almost wins (3 in a row)
+    for player in [1, -1]:
+        check_pattern(3, player)
+
+    # Center control
+    center_positions = [(1, 1, 1), (1, 1, 2), (1, 2, 1), (1, 2, 2), 
+                        (2, 1, 1), (2, 1, 2), (2, 2, 1), (2, 2, 2)]
+    for pos in center_positions:
+        if board[pos[0]][pos[1]][pos[2]] == 1:
+            score += 10  # Bonus for player control
+        elif board[pos[0]][pos[1]][pos[2]] == -1:
+            score -= 10  # Penalty for opponent control
+
+    # Scale the score based on depth
+    if depth != 0:
+        score = score / depth
 
     return score
