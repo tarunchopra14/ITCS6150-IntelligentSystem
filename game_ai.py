@@ -11,7 +11,7 @@ Functions:
 import game_logic
 
 
-GOOD_ENOUGH_THRESHOLD = 300  # Adjust as per requirements
+GOOD_ENOUGH_THRESHOLD = 500  # Adjust as per requirements
 
 def alpha_beta(player, depth, alpha, beta, board):
     """
@@ -27,7 +27,6 @@ def alpha_beta(player, depth, alpha, beta, board):
     Returns:
         tuple: Best value calculated by the algorithm and the best move as (z, x, y).
     """
-        
     if depth == 0 or game_logic.check_win(1, board) or game_logic.check_win(-1, board):  # Terminal state or depth limit reached
         return game_logic.evaluate(board, depth), None
 
@@ -52,7 +51,8 @@ def alpha_beta(player, depth, alpha, beta, board):
                             best_move = (z, x, y)
 
                         # If a move is found that's "good enough", break out
-                        if best_value >= GOOD_ENOUGH_THRESHOLD / depth:
+                        print("CHECK MAX " + str(best_value >= GOOD_ENOUGH_THRESHOLD))
+                        if best_value >= GOOD_ENOUGH_THRESHOLD:
                             return best_value, best_move
 
                         # Update alpha and prune if necessary
@@ -79,7 +79,8 @@ def alpha_beta(player, depth, alpha, beta, board):
                             best_move = (z, x, y)
 
                         # If a move is found that's "bad enough", break out
-                        if best_value <= -GOOD_ENOUGH_THRESHOLD / depth:
+                        print("CHECK MIN " + str(best_value <= -GOOD_ENOUGH_THRESHOLD))
+                        if best_value <= -GOOD_ENOUGH_THRESHOLD:
                             return best_value, best_move
 
                         # Update beta and prune if necessary
