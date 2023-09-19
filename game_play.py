@@ -47,6 +47,8 @@ def make_move(board, move, player):
     Returns:
         list: Updated game board after the move.
     """
+    print(move)
+
     z, x, y = move
     board[z][x][y] = player
     return board
