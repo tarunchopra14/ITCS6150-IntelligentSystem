@@ -10,7 +10,6 @@ Functions:
 
 import game_logic
 
-
 GOOD_ENOUGH_THRESHOLD = 500  # Adjust as per requirements
 
 def alpha_beta(player, depth, alpha, beta, board):

@@ -9,60 +9,48 @@ is met or the game ends in a tie.
 
 import game_ai
 
-def get_player_move(board):
+def is_valid_move(board, move):
     """
-    Prompt the player to make a move on the 3D Tic Tac Toe board.
+    Checks if a move at the given level, row, and column is valid.
     
     Args:
-        board (list): The current 3D game board.
-    
+        board (list): The 3D game board.
+        move (tuple): A tuple representing a move (level, row, col).
+
     Returns:
-        tuple: A tuple containing the chosen coordinates (z, x, y) for the move.
+        bool: True if the move is valid, False otherwise.
     """
-    while True:
-        try:
-            # Prompt the user for layer, row, and column.
-            z = int(input("Enter layer (1-4): ")) - 1
-            x = int(input("Enter row (1-4): ")) - 1
-            y = int(input("Enter column (1-4): ")) - 1
-            
-            # Validate the move.
-            if 0 <= z < 4 and 0 <= x < 4 and 0 <= y < 4 and board[z][x][y] == 0:
-                return z, x, y  # Return the chosen coordinates.
-            else:
-                print("Invalid move. Try again.")
-        except ValueError:
-            # Handle non-integer inputs.
-            print("Invalid input. Please enter a number between 1 and 4.")
+    level, row, col = move
+
+    return board[level][row][col] == 0
 
 def make_move(board, move, player):
     """
-    Apply the player's move on the board.
+    Place a move on the board.
     
     Args:
-        board (list): The current 3D game board.
-        move (tuple): A tuple containing the chosen coordinates (z, x, y) for the move.
-        player (int): Represents whether it's the player's move (1) or the computer's (-1).
-    
-    Returns:
-        list: Updated game board after the move.
-    """
-    print(move)
+        board (list): The 3D game board.
+        move (tuple): A tuple representing a move (level, row, col).
+        player (int): The player making the move (1 or -1).
 
-    z, x, y = move
-    board[z][x][y] = player
+    Returns:
+        list: The updated game board.
+    """
+    level, row, col = move
+    board[level][row][col] = player
     return board
 
 def computer_move(board, difficulty):
     """
-    Get the computer's move using the alpha-beta pruning algorithm.
+    Determine the computer's move based on the current board state and difficulty.
+    This implementation uses the Minimax algorithm with alpha-beta pruning.
     
     Args:
-        board (list): The current 3D game board.
-        difficulty (int): Depth for the alpha-beta pruning.
-    
+        board (list): The 3D game board.
+        difficulty (int): The depth for the alpha-beta pruning.
+
     Returns:
-        tuple: A tuple containing the chosen coordinates (z, x, y) for the move.
+        tuple: The chosen move for the computer as (level, row, col).
     """
     _, move = game_ai.alpha_beta(-1, difficulty, float('-inf'), float('inf'), board)
     return move
