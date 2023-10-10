@@ -5,7 +5,7 @@ This file manages the User Interface (UI) for the 3D Tic Tac Toe game. It handle
 and integrates with the game logic and AI logic for gameplay.
 
 Key Features:
-    - Renders the 3D board with animated movements.
+    - Renders the 3D board and movements.
     - Interprets user inputs to make moves.
     - Displays game status updates (e.g., win, lose, draw).
     - Provides different difficulty levels for the game AI.
@@ -22,6 +22,7 @@ Functions:
     - get_clicked_difficulty: Determines the difficulty selected by the player.
     - draw_reset_button: Renders the Reset game button.
     - reset_game: Resets the game to its initial state.
+    - draw_winner_screen: Displays the winner of the game.
 """
 
 import pygame
@@ -309,3 +310,30 @@ def reset_game():
     """Reset the game state."""
     global board
     board = initialize_board()
+
+
+# Constants for winner screen
+WINNER_FONT = pygame.font.SysFont("Arial", 30)
+WINNER_FONT_COLOR = (255, 255, 255)  # White color
+
+def draw_winner_screen(winner):
+    """
+    Renders the winner message on the screen.
+    
+    Args:
+        winner (int): The player who won the game (either PLAYER or AI).
+    """
+    if winner == PLAYER:
+        message = "You win - Congrats!"
+        color = PLAYER_X_COLOR
+    elif winner == AI:
+        message = "AI won this time - Sorry!"
+        color = PLAYER_O_COLOR
+    else:
+        message = "It's a draw!"
+        color = WINNER_FONT_COLOR
+
+    winner_surface = WINNER_FONT.render(message, True, color)
+    WINNER_POSITION = (WIDTH // 4 - winner_surface.get_width() // 2, PADDING * 2)
+    screen.blit(winner_surface, WINNER_POSITION)
+    pygame.display.flip()
