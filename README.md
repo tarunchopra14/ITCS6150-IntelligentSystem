@@ -1,7 +1,7 @@
 # ITCS6150-Intelligent System
 Intelligent System Project
 
-Group Project (maximal number of students in a group - 4)
+Group Project
 Implement One Player 3D Tic Tac Toe game (with 64 slots) - interface can be similar to the one given
 below.
 
@@ -18,3 +18,6 @@ Similar to the implementation of 2-dimensional Tic-Tac-Toe game
 
 Mini-Max and Alpha-Beta procedures are explained on:
 https://www.geeksforgeeks.org/implementation-of-tic-tac-toe-game/
+
+How to run the program
+python main.py
