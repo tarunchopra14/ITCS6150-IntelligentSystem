@@ -114,7 +114,7 @@ def evaluate(board, depth):
 
     # Check for immediate win/loss FIRST
     if check_win(1, board):  # Player wins
-        return -10000
+        return 10000
     elif check_win(-1, board):  # Opponent (AI) wins
         return -10000
 
